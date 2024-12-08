@@ -1,0 +1,327 @@
+*,
+html {
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  /* Menonaktifkan seleksi teks */
+}
+
+/* Menggunakan font Poppins untuk seluruh halaman */
+* {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  /* Menonaktifkan seleksi teks */
+}
+
+/* Styling untuk map */
+.map {
+  width: 100%;
+  height: 100%;
+  margin: 0 auto;
+  overflow: hidden;
+  background-color: #F0E5FF;
+  position: relative;
+  cursor: grab;
+}
+
+/* Styling untuk SVG */
+.map svg {
+  width: 50%;
+  height: auto;
+  position: absolute;
+  top: -80%;
+  left: 25%;
+  visibility: visible;
+  transform: translate(-50%, -50%);
+}
+
+/* Styling untuk kontrol */
+.controls {
+  position: absolute;
+  top: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 5px 8px;
+  border-radius: 100px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5);
+  /* Menambahkan bayangan */
+}
+
+.controls button {
+  background-color: #F0E5FF;
+  border: none;
+  width: 35px;
+  /* Atur width */
+  height: 35px;
+  /* Atur height agar sama dengan width */
+  cursor: pointer;
+  border-radius: 50%;
+  /* Membuat tombol berbentuk lingkaran */
+  font-size: 25px;
+  display: flex;
+  /* Untuk memusatkan teks atau ikon */
+  justify-content: center;
+  align-items: center;
+}
+
+.controls button:hover {
+  background-color: #BF9FEE;
+}
+
+/* Styling untuk shape */
+.shape {
+  fill: #BF9FEE;
+  /* Warna default shape */
+  transition: fill 0.2s ease;
+  cursor: pointer;
+  /* Menandakan bahwa elemen dapat dipilih */
+}
+
+.shape:hover {
+  fill: #9B73D2;
+  /* Warna saat dihover */
+}
+
+#mapContainer {
+  position: relative;
+  overflow: hidden; /* Pastikan elemen di luar area tidak terlihat */
+}
+
+/* Styling untuk info-box yang muncul */
+.info-box {
+  position: absolute;
+  display: flex;
+  align-items: top;
+  background-color: rgb(255, 255, 255);
+  padding: 15px;
+  border-radius: 5px;
+  opacity: 0;
+  /* Default tersembunyi */
+  visibility: hidden;
+  /* Default tidak terlihat */
+  pointer-events: none;
+  /* Agar tidak menghalangi elemen lain */
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  /* Transisi */
+
+  /* Menambahkan shadow */
+  box-shadow: 10px 10px 25px 0px rgba(106, 61, 155, 0.19);
+  -webkit-box-shadow: 10px 10px 25px 0px rgba(106, 61, 155, 0.19);
+  -moz-box-shadow: 10px 10px 25px 0px rgba(106, 61, 155, 0.19);
+}
+
+.info-box img {
+  width: 120px;
+  height: 90px;
+  border-radius: 5px;
+  object-fit: cover;
+  margin-right: 15px;
+}
+
+.info-box p {
+  color: rgb(0, 0, 0);
+  font-size: 25px;
+  max-width: 200px;
+}
+
+/* Styling untuk input pencarian */
+#searchInput {
+  padding: 5px;
+  border: 1px solid #ffffff;
+  border-radius: 100px;
+  font-size: 14px;
+  outline: none;
+
+}
+
+#searchInput:focus {
+  border-color: #9B73D2;
+  box-shadow: 0 0 5px rgba(155, 115, 210, 0.5);
+}
+
+.suggestions-list {
+  position: absolute;
+  top: 45px;
+  left: 0;
+  width: 100%;
+  background-color: #F0E5FF;
+  max-height: 133px;
+  overflow-y: auto;
+  display: none;
+  z-index: 10;
+  border-radius: 10px;
+
+  /* Menambahkan shadow */
+  box-shadow: 10px 10px 25px 0px rgba(106, 61, 155, 0.19);
+  -webkit-box-shadow: 10px 10px 25px 0px rgba(106, 61, 155, 0.19);
+  -moz-box-shadow: 10px 10px 25px 0px rgba(106, 61, 155, 0.19);
+}
+
+.suggestions-list div {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.suggestions-list div:hover {
+  background-color: #BF9FEE;
+}
+
+/* Tombol hamburger */
+.hamburger {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  width: 35px;
+  height: 30px;
+  cursor: pointer;
+  z-index: 1000;
+}
+
+.hamburger .bar {
+  height: 5px;
+  background-color: #6A3D9B;
+  margin: 6px 0;
+  transition: all 0.3s;
+}
+
+/* Kontainer map yang akan berubah lebar */
+.map {
+  transition: width 0.3s ease, transform 0.3s ease;
+  width: 100%;
+  /* Map akan fit 100% lebar layar */
+  height: 100%;
+  /* Map akan fit 100% tinggi layar */
+  background-color: #F0E5FF;
+  position: relative;
+  cursor: grab;
+  overflow: hidden;
+  /* Menyembunyikan scrollbar */
+}
+
+/* Ketika hamburger dibuka, lebar map akan dikurangi 250px */
+.map.open {
+  width: calc(100% - 250px);
+  /* Mengurangi lebar map dengan lebar menu */
+  transform: translateX(125px);
+}
+
+/* Tampilan hamburger berubah menjadi X saat menu dibuka */
+.hamburger.open .bar:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+  /* Garis pertama berputar */
+  background-color: #F0E5FF;
+}
+
+.hamburger.open .bar:nth-child(2) {
+  opacity: 0;
+  /* Menghilangkan garis kedua */
+}
+
+.hamburger.open .bar:nth-child(3) {
+  transform: rotate(-45deg) translate(5px, -5px);
+  /* Garis ketiga berputar */
+  background-color: #F0E5FF;
+}
+
+/* Tampilan sidebar (menu) yang akan muncul saat hamburger diklik */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 250px;
+  height: 100vh;
+  background-color: #6A3D9B;
+  padding-top: 70px;
+  z-index: 999;
+  transform: translateX(-100%);
+  /* Mulai di luar layar */
+  transition: transform 0.3s ease;
+}
+
+/* Ketika menu dibuka, geser sidebar ke kiri */
+.sidebar.open {
+  transform: translateX(0);
+}
+
+/* Styling untuk daftar menu dalam sidebar */
+.sidebar ul {
+  list-style: none;
+  padding: 10px 20px 0px 20px;
+  color: white;
+  font-size: 18px;
+}
+
+.sidebar ul li {
+  padding-left: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  position: hidden;
+}
+
+li p:hover {
+  font-size: 110%;
+  border-radius: 100px;
+  background-color: #9B73D2;
+  transition: font-size 0.2s ease;
+}
+
+.sub-menu {
+  display: none;
+  list-style-type: none;
+  padding-left: 20px;
+}
+
+#direction-controls {
+  padding: 20px;
+  padding-bottom: 10px;
+  padding-top: 10px;
+  color: white;
+}
+
+#direction-controls input {
+  margin: 5px 0;
+  padding: 5px;
+  border: 1px solid white;
+  border-radius: 100px;
+  width: 80%;
+  outline: none;
+  font-size: 14px;
+}
+
+#direction-controls button {
+  width: 35px;
+  height: 35px;
+  padding: 5px;
+  border: none;
+  border-radius: 50px;
+  background-color: #9B73D2;
+  color: white;
+  cursor: pointer;
+}
+
+#direction-controls .suggestions-list {
+  position: absolute;
+  margin-top: 5px;
+  width: 100%;
+  max-height: 100px;
+  overflow-y: auto;
+  background-color: #F0E5FF;
+  border-radius: 5px;
+  display: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#direction-controls .suggestions-list div {
+  padding: 5px;
+  color: black;
+  cursor: pointer;
+}
+
+#direction-controls .suggestions-list div:hover {
+  background-color: #BF9FEE;
+}
